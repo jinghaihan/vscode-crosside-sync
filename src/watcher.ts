@@ -3,8 +3,8 @@ import { extensions, workspace } from 'vscode'
 import { appName } from './config'
 import { updateExtensionRecommendations } from './json'
 import { getExtensions, getKeybindings, getSettings } from './profile'
-import { readStorageFile, storageFileExists, writeStorageFile } from './storage'
-import { findConfigFile, logger } from './utils'
+import { getStorageFileUri, readStorageFile, storageFileExists, writeStorageFile } from './storage'
+import { compareMtime, findConfigFile, logger } from './utils'
 
 export class ConfigWatcher {
   private ctx: ExtensionContext
@@ -39,9 +39,16 @@ export class ConfigWatcher {
           logger.info('Settings configuration changed, syncing to storage...')
           const settingsPath = await findConfigFile(appName, 'settings.json')
           if (settingsPath) {
+            const hasStorage = await storageFileExists('settings.json')
+            if (hasStorage) {
+              const storageUri = getStorageFileUri('settings.json')
+              const result = await compareMtime(storageUri.fsPath, settingsPath)
+              if (result !== -1)
+                return
+            }
+
             const settings = await getSettings(settingsPath)
             await writeStorageFile('settings.json', settings)
-            logger.info('Settings synced to storage successfully')
           }
         }
         catch (error) {
@@ -95,6 +102,14 @@ export class ConfigWatcher {
         try {
           logger.info('Keybindings file changed, syncing to storage...')
           const keybindings = await getKeybindings(keybindingsPath)
+          const hasStorage = await storageFileExists('keybindings.json')
+          if (hasStorage) {
+            const storageUri = getStorageFileUri('keybindings.json')
+            const result = await compareMtime(storageUri.fsPath, keybindingsPath)
+            if (result !== -1)
+              return
+          }
+
           await writeStorageFile('keybindings.json', keybindings)
           logger.info('Keybindings synced to storage successfully')
         }

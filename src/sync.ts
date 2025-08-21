@@ -32,10 +32,10 @@ export async function syncProfile(ctx: ExtensionContext, options: SyncCommandOpt
       syncKeybindings(ctx, opts),
       syncExtensions(ctx, opts),
     ])
-  }
 
-  if (!silent) {
-    window.showInformationMessage(`${displayName}: Config updated`)
+    if (!silent) {
+      window.showInformationMessage(`${displayName}: Config updated`)
+    }
   }
 }
 
