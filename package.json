@@ -1,0 +1,139 @@
+{
+  "publisher": "octohash",
+  "name": "crosside-sync",
+  "displayName": "Crosside Sync",
+  "version": "0.0.0",
+  "private": true,
+  "packageManager": "pnpm@10.15.0",
+  "description": "Extension that synchronizes settings, keybindings and extensions across VSCode and its forks.",
+  "author": "jinghaihan",
+  "license": "MIT",
+  "homepage": "https://github.com/jinghaihan/vscode-crosside-sync#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jinghaihan/vscode-crosside-sync.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jinghaihan/vscode-crosside-sync/issues"
+  },
+  "keywords": [
+    "vscode",
+    "cursor",
+    "settings",
+    "keybindings",
+    "extensions",
+    "sync"
+  ],
+  "categories": [
+    "Other"
+  ],
+  "main": "./dist/index.js",
+  "icon": "res/icon.png",
+  "files": [
+    "LICENSE.md",
+    "dist/*",
+    "res/*"
+  ],
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "octohash.crosside-sync.syncProfile",
+        "title": "Sync Everything",
+        "category": "Crosside Sync",
+        "icon": "$(sync)"
+      },
+      {
+        "command": "octohash.crosside-sync.syncSettings",
+        "title": "Sync Settings",
+        "category": "Crosside Sync",
+        "icon": "$(sync)"
+      },
+      {
+        "command": "octohash.crosside-sync.syncKeybindings",
+        "title": "Sync Keybindings",
+        "category": "Crosside Sync",
+        "icon": "$(sync)"
+      },
+      {
+        "command": "octohash.crosside-sync.syncExtensions",
+        "title": "Sync Extensions",
+        "category": "Crosside Sync",
+        "icon": "$(sync)"
+      }
+    ],
+    "configuration": {
+      "type": "object",
+      "title": "vscode-crosside-sync",
+      "properties": {
+        "crosside-sync.storagePath": {
+          "type": "string",
+          "description": "The path to store the sync data share between VSCode and its forks.",
+          "default": "~/.crosside-sync"
+        },
+        "crosside-sync.autoSync": {
+          "type": "boolean",
+          "description": "Whether to automatically sync settings.",
+          "default": true
+        },
+        "crosside-sync.promptOnAutoSync": {
+          "type": "boolean",
+          "description": "Should show prompt before auto sync.",
+          "default": true
+        },
+        "crosside-sync.excludeExtensions": {
+          "type": "array",
+          "description": "Extensions to exclude from sync.",
+          "default": []
+        }
+      }
+    }
+  },
+  "scripts": {
+    "build": "tsdown",
+    "dev": "pnpm build --watch --sourcemap",
+    "generate": "vscode-ext-gen --output src/generated/meta.ts",
+    "lint": "eslint",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest",
+    "release": "bumpp",
+    "package": "vsce package --no-dependencies",
+    "prepare": "npx simple-git-hooks && pnpm generate",
+    "bootstrap": "pnpm install",
+    "preinstall": "npx only-allow pnpm",
+    "prepublishOnly": "pnpm build",
+    "vscode:prepublish": "pnpm build"
+  },
+  "dependencies": {
+    "comment-json": "catalog:utils"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "catalog:lint",
+    "@types/node": "catalog:types",
+    "@types/vscode": "^1.90.0",
+    "@vscode/vsce": "catalog:cli",
+    "bumpp": "catalog:cli",
+    "eslint": "catalog:lint",
+    "lint-staged": "catalog:lint",
+    "ovsx": "catalog:cli",
+    "pncat": "catalog:cli",
+    "reactive-vscode": "catalog:vscode",
+    "simple-git-hooks": "catalog:lint",
+    "taze": "catalog:cli",
+    "tsdown": "catalog:build",
+    "typescript": "catalog:dev",
+    "vitest": "catalog:test",
+    "vscode-ext-gen": "catalog:vscode"
+  },
+  "simple-git-hooks": {
+    "pre-commit": "pnpm lint-staged"
+  },
+  "lint-staged": {
+    "*": "eslint --fix"
+  }
+}
