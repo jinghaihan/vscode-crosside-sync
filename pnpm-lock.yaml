@@ -65,10 +65,6 @@ catalogs:
 importers:
 
   .:
-    dependencies:
-      comment-json:
-        specifier: catalog:utils
-        version: 4.2.5
     devDependencies:
       '@antfu/eslint-config':
         specifier: catalog:lint
@@ -85,6 +81,9 @@ importers:
       bumpp:
         specifier: catalog:cli
         version: 10.2.3
+      comment-json:
+        specifier: catalog:utils
+        version: 4.2.5
       eslint:
         specifier: catalog:lint
         version: 9.33.0(jiti@2.5.1)

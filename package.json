@@ -109,15 +109,13 @@
     "prepublishOnly": "pnpm build",
     "vscode:prepublish": "pnpm build"
   },
-  "dependencies": {
-    "comment-json": "catalog:utils"
-  },
   "devDependencies": {
     "@antfu/eslint-config": "catalog:lint",
     "@types/node": "catalog:types",
     "@types/vscode": "^1.90.0",
     "@vscode/vsce": "catalog:cli",
     "bumpp": "catalog:cli",
+    "comment-json": "catalog:utils",
     "eslint": "catalog:lint",
     "lint-staged": "catalog:lint",
     "ovsx": "catalog:cli",
