@@ -81,7 +81,7 @@
           "description": "Whether to automatically sync settings.",
           "default": true
         },
-        "crosside-sync.promptOnAutoSync": {
+        "crosside-sync.promptOnSync": {
           "type": "boolean",
           "description": "Should show prompt before auto sync.",
           "default": true

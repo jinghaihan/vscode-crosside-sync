@@ -3,7 +3,7 @@ export interface SyncCommandOptions {
   silent?: boolean
 }
 
-export interface ExtensionDiff {
+export interface ExtensionsDiff {
   toInstall: string[]
   toDelete: string[]
 }

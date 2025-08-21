@@ -102,14 +102,6 @@ export class ConfigWatcher {
         try {
           logger.info('Keybindings file changed, syncing to storage...')
           const keybindings = await getKeybindings(keybindingsPath)
-          const hasStorage = await storageFileExists('keybindings.json')
-          if (hasStorage) {
-            const storageUri = getStorageFileUri('keybindings.json')
-            const result = await compareMtime(storageUri.fsPath, keybindingsPath)
-            if (result !== -1)
-              return
-          }
-
           await writeStorageFile('keybindings.json', keybindings)
           logger.info('Keybindings synced to storage successfully')
         }

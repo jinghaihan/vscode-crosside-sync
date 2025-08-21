@@ -1,5 +1,5 @@
 import type { Extension } from 'vscode'
-import type { ExtensionDiff } from './types'
+import type { ExtensionsDiff } from './types'
 import { Buffer } from 'node:buffer'
 import { commands, extensions, ProgressLocation, Uri, window, workspace } from 'vscode'
 import { config } from './config'
@@ -60,10 +60,10 @@ export async function setKeybindings(path: string, keybindings: string[] | strin
 
 function normalizeExtensions(extensions: string[]): string[] {
   const excludes = (config.excludeExtensions as string[]).map(id => id.toLowerCase())
-  return extensions.filter(id => !excludes.includes(id.toLowerCase())).map(id => id.toLowerCase())
+  return extensions.map(id => id.toLowerCase()).filter(id => !excludes.includes(id))
 }
 
-export function getExtensionsDiff(extensions: string[]): ExtensionDiff | undefined {
+export function getExtensionsDiff(extensions: string[]): ExtensionsDiff | undefined {
   extensions = normalizeExtensions(extensions)
   const installedExtensions = normalizeExtensions(getExtensions())
 
@@ -114,13 +114,19 @@ export async function setExtensions(exts: string[], prompt: boolean = true) {
         .filter(Boolean)
         .join('\n\n')
 
-      await window.showInformationMessage(details, {
-        modal: true,
-      })
-      return
+      const result = await window.showInformationMessage(
+        details,
+        { modal: true },
+        'Continue',
+        'Cancel',
+      )
+
+      if (result === 'Cancel') {
+        return
+      }
     }
 
-    if (action !== 'Yes') {
+    if (action === 'Cancel') {
       return
     }
   }

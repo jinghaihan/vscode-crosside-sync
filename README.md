@@ -1,6 +1,6 @@
 # VSCode Crosside Sync
 
-A powerful VS Code extension that enables seamless synchronization of settings, keybindings, and extensions across VS Code and its forks (like Cursor) using local storage with optional cloud sync capabilities.
+A powerful VS Code extension that enables seamless synchronization of settings, keybindings, and extensions across VS Code and its forks (like Cursor) using local storage.
 
 ## Features
 
@@ -27,14 +27,14 @@ Configure the extension behavior through VS Code settings:
 {
   "crosside-sync.storagePath": "~/.crosside-sync",
   "crosside-sync.autoSync": true,
-  "crosside-sync.promptOnAutoSync": true,
+  "crosside-sync.promptOnSync": true,
   "crosside-sync.excludeExtensions": []
 }
 ```
 
 - **`crosside-sync.storagePath`** (`string`, default: `"~/.crosside-sync"`) - Path to the shared storage directory
 - **`crosside-sync.autoSync`** (`boolean`, default: `true`) - Whether to automatically sync on startup
-- **`crosside-sync.promptOnAutoSync`** (`boolean`, default: `true`) - Show confirmation prompt before auto-sync
+- **`crosside-sync.promptOnSync`** (`boolean`, default: `true`) - Show confirmation prompt before sync
 - **`crosside-sync.excludeExtensions`** (`string[]`, default: `[]`) - List of extension IDs to exclude from sync
 
 ## Installation

@@ -46,27 +46,13 @@ describe('updateExtensionRecommendations', () => {
         "recommendations": [
           // themes & icons
           "file-icons.file-icons",
-          "catppuccin.catppuccin-vsc",
-          "catppuccin.catppuccin-vsc-icons",
           "antfu.theme-vitesse",
           "antfu.icons-carbon",
-          "be5invis.vscode-custom-css",
-          "hoovercj.vscode-power-mode",
           // enhancements
           "antfu.file-nesting",
           "antfu.pnpm-catalog-lens",
-          "antfu.goto-alias",
-          "antfu.smart-clicks",
-          "antfu.where-am-i",
-          "gruntfuggly.todo-tree",
-          "formulahendry.auto-rename-tag",
-          "aaron-bond.better-comments",
-          "kamikillerto.vscode-colorize",
-          "vunguyentuan.vscode-css-variables",
           // linters
           "dbaeumer.vscode-eslint",
-          "esbenp.prettier-vscode",
-          "stylelint.vscode-stylelint",
           "usernamehw.errorlens",
           "streetsidesoftware.code-spell-checker",
           // intellisense
@@ -74,13 +60,11 @@ describe('updateExtensionRecommendations', () => {
           "bradlc.vscode-tailwindcss",
           "antfu.unocss",
           "antfu.iconify",
-          "lokalise.i18n-ally",
           // git tools
           "eamodio.gitlens",
           "mhutchie.git-graph",
           // misc
           "wmaurer.change-case",
-          "yrm.type-challenges",
           // sync
           "octohash.crosside-sync"
         ]
