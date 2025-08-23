@@ -12,7 +12,7 @@ const { activate, deactivate } = defineExtension(async (ctx: ExtensionContext) =
   commands.registerCommand('octohash.crosside-sync.syncExtensions', () => syncExtensions(ctx, { prompt: config.promptOnExtensionSync }))
 
   if (config.autoSync) {
-    syncProfile(ctx, { prompt: config.promptOnAutoSync })
+    syncProfile(ctx, { prompt: config.promptOnAutoSync, silent: !config.promptOnAutoSync })
   }
 
   const configWatcher = new ConfigWatcher(ctx)
