@@ -9,10 +9,10 @@ const { activate, deactivate } = defineExtension(async (ctx: ExtensionContext) =
   commands.registerCommand('octohash.crosside-sync.syncProfile', () => syncProfile(ctx, { prompt: false }))
   commands.registerCommand('octohash.crosside-sync.syncSettings', () => syncSettings(ctx))
   commands.registerCommand('octohash.crosside-sync.syncKeybindings', () => syncKeybindings(ctx))
-  commands.registerCommand('octohash.crosside-sync.syncExtensions', () => syncExtensions(ctx, { prompt: true }))
+  commands.registerCommand('octohash.crosside-sync.syncExtensions', () => syncExtensions(ctx, { prompt: config.promptOnExtensionSync }))
 
   if (config.autoSync) {
-    syncProfile(ctx, { prompt: config.promptOnSync })
+    syncProfile(ctx, { prompt: config.promptOnAutoSync })
   }
 
   const configWatcher = new ConfigWatcher(ctx)

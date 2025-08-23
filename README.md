@@ -27,14 +27,16 @@ Configure the extension behavior through VS Code settings:
 {
   "crosside-sync.storagePath": "~/.crosside-sync",
   "crosside-sync.autoSync": true,
-  "crosside-sync.promptOnSync": true,
+  "crosside-sync.promptOnAutoSync": true,
+  "crosside-sync.promptOnExtensionSync": true,
   "crosside-sync.excludeExtensions": []
 }
 ```
 
 - **`crosside-sync.storagePath`** (`string`, default: `"~/.crosside-sync"`) - Path to the shared storage directory
 - **`crosside-sync.autoSync`** (`boolean`, default: `true`) - Whether to automatically sync on startup
-- **`crosside-sync.promptOnSync`** (`boolean`, default: `true`) - Show confirmation prompt before sync
+- **`crosside-sync.promptOnAutoSync`** (`boolean`, default: `true`) - Show confirmation prompt before sync
+- **`crosside-sync.promptOnExtensionSync`** (`boolean`, default: `true`) - Show confirmation prompt before syncing extensions
 - **`crosside-sync.excludeExtensions`** (`string[]`, default: `[]`) - List of extension IDs to exclude from sync
 
 ## Installation

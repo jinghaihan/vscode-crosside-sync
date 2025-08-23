@@ -1,7 +1,7 @@
 import type { ExtensionContext } from 'vscode'
 import type { ExtensionRecommendations, SyncCommandOptions } from './types'
 import { window } from 'vscode'
-import { codeName } from './config'
+import { codeName, config } from './config'
 import { displayName } from './generated/meta'
 import { jsonParse, updateExtensionRecommendations } from './json'
 import { getExtensions, getKeybindings, getSettings, setExtensions, setKeybindings, setSettings } from './profile'
@@ -30,7 +30,7 @@ export async function syncProfile(ctx: ExtensionContext, options: SyncCommandOpt
     await Promise.all([
       syncSettings(ctx, opts),
       syncKeybindings(ctx, opts),
-      syncExtensions(ctx, opts),
+      syncExtensions(ctx, { ...opts, prompt: config.promptOnExtensionSync }),
     ])
 
     if (!silent) {
