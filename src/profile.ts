@@ -3,7 +3,7 @@ import type { ExtensionsDiff } from './types'
 import { Buffer } from 'node:buffer'
 import { commands, extensions, ProgressLocation, Uri, window, workspace } from 'vscode'
 import { config } from './config'
-import { name, publisher } from './generated/meta'
+import { extensionId } from './generated/meta'
 import { logger } from './utils'
 
 export async function getSettings(path: string) {
@@ -68,7 +68,7 @@ export function getExtensionsDiff(extensions: string[]): ExtensionsDiff | undefi
   const installedExtensions = normalizeExtensions(getExtensions())
 
   const targetSet = new Set(extensions)
-  targetSet.add(`${publisher}.${name}`)
+  targetSet.add(extensionId)
   const installedSet = new Set(installedExtensions)
 
   const toInstall = extensions.filter(id => !installedSet.has(id))

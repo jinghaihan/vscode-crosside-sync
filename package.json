@@ -102,6 +102,7 @@
   "scripts": {
     "build": "tsdown",
     "dev": "pnpm build --watch --sourcemap",
+    "deps": "taze major -I",
     "generate": "vscode-ext-gen --output src/generated/meta.ts",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",

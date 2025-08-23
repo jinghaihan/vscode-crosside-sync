@@ -14,6 +14,7 @@ export default defineConfig({
     {
       name: 'vscode',
       match: [/vscode/],
+      priority: 50,
     },
   ]),
 })
