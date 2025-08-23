@@ -1,6 +1,6 @@
 import type { ExtensionContext, FileSystemWatcher, Uri } from 'vscode'
 import { extensions, workspace } from 'vscode'
-import { appName } from './config'
+import { codeName } from './config'
 import { updateExtensionRecommendations } from './json'
 import { getExtensions, getKeybindings, getSettings } from './profile'
 import { getStorageFileUri, readStorageFile, storageFileExists, writeStorageFile } from './storage'
@@ -37,7 +37,7 @@ export class ConfigWatcher {
       this.debounceSync('settings', async () => {
         try {
           logger.info('Settings configuration changed, syncing to storage...')
-          const settingsPath = await findConfigFile(appName, 'settings.json')
+          const settingsPath = await findConfigFile(codeName, 'settings.json')
           if (settingsPath) {
             const hasStorage = await storageFileExists('settings.json')
             if (hasStorage) {
@@ -89,7 +89,7 @@ export class ConfigWatcher {
   }
 
   private async watchKeybindings() {
-    const keybindingsPath = await findConfigFile(appName, 'keybindings.json')
+    const keybindingsPath = await findConfigFile(codeName, 'keybindings.json')
     if (!keybindingsPath) {
       logger.warn('Keybindings file not found, skipping watcher')
       return

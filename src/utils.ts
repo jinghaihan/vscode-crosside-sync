@@ -8,29 +8,29 @@ import { displayName } from './generated/meta'
 
 export const logger = useLogger(displayName)
 
-function getConfigPaths(appName: string, file: string): string[] {
+function getConfigPaths(codeName: string, file: string): string[] {
   switch (platform()) {
     case 'win32':
       return [
-        `${process.env.APPDATA}/${appName}/User/${file}`,
-        `${process.env.USERPROFILE}/AppData/Roaming/${appName}/User/${file}`,
+        `${process.env.APPDATA}/${codeName}/User/${file}`,
+        `${process.env.USERPROFILE}/AppData/Roaming/${codeName}/User/${file}`,
       ]
     case 'darwin':
       return [
-        `${process.env.HOME}/Library/Application Support/${appName}/User/${file}`,
-        `${homedir()}/Library/Application Support/${appName}/User/${file}`,
+        `${process.env.HOME}/Library/Application Support/${codeName}/User/${file}`,
+        `${homedir()}/Library/Application Support/${codeName}/User/${file}`,
       ]
     default:
       return [
-        `${process.env.HOME}/.config/${appName}/User/${file}`,
-        `${process.env.XDG_CONFIG_HOME || `${homedir()}/.config`}/${appName}/User/${file}`,
-        `${homedir()}/.config/${appName}/User/${file}`,
+        `${process.env.HOME}/.config/${codeName}/User/${file}`,
+        `${process.env.XDG_CONFIG_HOME || `${homedir()}/.config`}/${codeName}/User/${file}`,
+        `${homedir()}/.config/${codeName}/User/${file}`,
       ]
   }
 }
 
-export async function findConfigFile(appName: string, file: string): Promise<string | undefined> {
-  const possiblePaths = getConfigPaths(appName, file)
+export async function findConfigFile(codeName: string, file: string): Promise<string | undefined> {
+  const possiblePaths = getConfigPaths(codeName, file)
 
   for (const path of possiblePaths) {
     try {

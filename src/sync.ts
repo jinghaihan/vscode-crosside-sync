@@ -1,7 +1,7 @@
 import type { ExtensionContext } from 'vscode'
 import type { ExtensionRecommendations, SyncCommandOptions } from './types'
 import { window } from 'vscode'
-import { appName } from './config'
+import { codeName } from './config'
 import { displayName } from './generated/meta'
 import { jsonParse, updateExtensionRecommendations } from './json'
 import { getExtensions, getKeybindings, getSettings, setExtensions, setKeybindings, setSettings } from './profile'
@@ -41,7 +41,7 @@ export async function syncProfile(ctx: ExtensionContext, options: SyncCommandOpt
 
 export async function syncSettings(_ctx: ExtensionContext, options: SyncCommandOptions = {}) {
   const { silent = false } = options
-  const settingsPath = await findConfigFile(appName, 'settings.json')
+  const settingsPath = await findConfigFile(codeName, 'settings.json')
   if (!settingsPath) {
     logger.error('Settings file not found')
     if (!silent) {
@@ -80,7 +80,7 @@ export async function syncSettings(_ctx: ExtensionContext, options: SyncCommandO
 
 export async function syncKeybindings(_ctx: ExtensionContext, options: SyncCommandOptions = {}) {
   const { silent = false } = options
-  const keybindingsPath = await findConfigFile(appName, 'keybindings.json')
+  const keybindingsPath = await findConfigFile(codeName, 'keybindings.json')
   if (!keybindingsPath) {
     logger.error('Keybindings file not found')
     if (!silent) {
