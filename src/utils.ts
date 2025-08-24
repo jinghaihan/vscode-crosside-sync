@@ -1,9 +1,8 @@
-import type { Extension } from 'vscode'
+import { Buffer } from 'node:buffer'
 import { homedir, platform } from 'node:os'
-import { dirname } from 'node:path'
 import process from 'node:process'
 import { useLogger } from 'reactive-vscode'
-import { extensions, Uri, workspace } from 'vscode'
+import { Uri, workspace } from 'vscode'
 import { displayName } from './generated/meta'
 
 export const logger = useLogger(displayName)
@@ -53,6 +52,11 @@ export function resolvePathUri(path: string): Uri {
   return Uri.file(path)
 }
 
+export async function readFile(uri: Uri): Promise<string> {
+  const buffer = await workspace.fs.readFile(uri)
+  return Buffer.from(buffer).toString('utf-8')
+}
+
 export async function compareMtime(path1: string, path2: string): Promise<1 | -1 | 0 | undefined> {
   try {
     const [stat1, stat2] = await Promise.all([
@@ -73,13 +77,4 @@ export async function compareMtime(path1: string, path2: string): Promise<1 | -1
   catch (error) {
     logger.warn(`Failed to compare file modification times: ${error}`)
   }
-}
-
-export function getExtensionsPath(): string | undefined {
-  const ext = extensions.all.find((ext: Extension<any>) => !ext.packageJSON.isBuiltin)
-  if (!ext) {
-    logger.warn(`Could not find extensions directory`)
-    return
-  }
-  return dirname(ext.extensionPath)
 }

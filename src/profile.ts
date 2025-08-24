@@ -1,10 +1,11 @@
 import type { Extension } from 'vscode'
-import type { ExtensionsDiff } from './types'
+import type { ExtensionConfig, ExtensionsDiff } from './types'
 import { Buffer } from 'node:buffer'
+import { dirname, join } from 'node:path'
 import { commands, extensions, ProgressLocation, Uri, window, workspace } from 'vscode'
 import { config } from './config'
 import { extensionId } from './generated/meta'
-import { logger } from './utils'
+import { logger, readFile } from './utils'
 
 export async function getSettings(path: string) {
   try {
@@ -63,33 +64,40 @@ function normalizeExtensions(extensions: string[]): string[] {
   return extensions.map(id => id.toLowerCase()).filter(id => !excludes.includes(id))
 }
 
-export function getExtensionsDiff(extensions: string[]): ExtensionsDiff | undefined {
-  extensions = normalizeExtensions(extensions)
-  const installedExtensions = normalizeExtensions(getExtensions())
+export async function readExtensionConfig(): Promise<ExtensionConfig[]> {
+  const extensionsPath = getExtensionsPath()
+  if (!extensionsPath) {
+    throw new Error('Could not find extensions directory')
+  }
 
-  const targetSet = new Set(extensions)
-  targetSet.add(extensionId)
-  const installedSet = new Set(installedExtensions)
+  const uri = Uri.file(join(extensionsPath, 'extensions.json'))
+  const content = await readFile(uri)
+  const config = JSON.parse(content)
 
-  const toInstall = extensions.filter(id => !installedSet.has(id))
-  const toDelete = installedExtensions.filter(id => !targetSet.has(id))
-
-  if (toInstall.length === 0 && toDelete.length === 0)
-    return
-
-  return { toInstall, toDelete }
+  return config
 }
 
-export function getExtensions(): string[] {
-  return normalizeExtensions(
-    extensions.all
+export async function getUserExtensions(): Promise<string[]> {
+  try {
+    // Try to read from the extensions.json file
+    const config = await readExtensionConfig()
+    return config.map(i => i.identifier.id)
+  }
+  catch (error) {
+    logger.error('Failed to get user extensions', error)
+    // That not include the disabled extensions
+    return extensions.all
       .filter((ext: Extension<any>) => !ext.packageJSON.isBuiltin)
-      .map((ext: Extension<any>) => ext.id),
-  )
+      .map((ext: Extension<any>) => ext.id)
+  }
+}
+
+export async function getExtensions(): Promise<string[]> {
+  return normalizeExtensions(await getUserExtensions())
 }
 
 export async function setExtensions(exts: string[], prompt: boolean = true) {
-  const diff = getExtensionsDiff(exts)
+  const diff = await getExtensionsDiff(exts)
   if (!diff)
     return
 
@@ -106,13 +114,9 @@ export async function setExtensions(exts: string[], prompt: boolean = true) {
 
     if (action === 'Show Details') {
       const details = [
-        toInstall.length > 0
-          ? `To Install:\n${toInstall.join('\n')}`
-          : '',
+        toInstall.length > 0 ? `To Install:\n${toInstall.join('\n')}` : '',
         toDelete.length > 0 ? `To Remove:\n${toDelete.join('\n')}` : '',
-      ]
-        .filter(Boolean)
-        .join('\n\n')
+      ].filter(Boolean).join('\n\n')
 
       const result = await window.showInformationMessage(
         details,
@@ -191,4 +195,30 @@ export async function setExtensions(exts: string[], prompt: boolean = true) {
       await commands.executeCommand('workbench.action.reloadWindow')
     }
   }
+}
+
+export function getExtensionsPath(): string | undefined {
+  const ext = extensions.all.find((ext: Extension<any>) => !ext.packageJSON.isBuiltin)
+  if (!ext) {
+    logger.warn(`Could not find extensions directory`)
+    return
+  }
+  return dirname(ext.extensionPath)
+}
+
+export async function getExtensionsDiff(extensions: string[]): Promise<ExtensionsDiff | undefined> {
+  extensions = normalizeExtensions(extensions)
+  const installedExtensions = normalizeExtensions(await getExtensions())
+
+  const targetSet = new Set(extensions)
+  targetSet.add(extensionId)
+  const installedSet = new Set(installedExtensions)
+
+  const toInstall = extensions.filter(id => !installedSet.has(id))
+  const toDelete = installedExtensions.filter(id => !targetSet.has(id))
+
+  if (toInstall.length === 0 && toDelete.length === 0)
+    return
+
+  return { toInstall, toDelete }
 }

@@ -65,7 +65,7 @@ export class ConfigWatcher {
       this.debounceSync('extensions', async () => {
         try {
           logger.info('Extensions changed, syncing to storage...')
-          const extensions = getExtensions()
+          const extensions = await getExtensions()
           const hasStorage = await storageFileExists('extensions.json')
 
           if (!hasStorage) {

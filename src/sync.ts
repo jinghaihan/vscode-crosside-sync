@@ -4,9 +4,9 @@ import { window } from 'vscode'
 import { codeName, config } from './config'
 import { displayName } from './generated/meta'
 import { jsonParse, updateExtensionRecommendations } from './json'
-import { getExtensions, getKeybindings, getSettings, setExtensions, setKeybindings, setSettings } from './profile'
+import { getExtensions, getExtensionsPath, getKeybindings, getSettings, setExtensions, setKeybindings, setSettings } from './profile'
 import { ensureStorageDirectory, getStorageFileUri, readStorageFile, storageFileExists, writeStorageFile } from './storage'
-import { compareMtime, findConfigFile, getExtensionsPath, logger } from './utils'
+import { compareMtime, findConfigFile, logger } from './utils'
 
 export async function syncProfile(ctx: ExtensionContext, options: SyncCommandOptions = {}) {
   const { prompt = true, silent = false } = options
@@ -147,7 +147,7 @@ export async function syncExtensions(_ctx: ExtensionContext, options: SyncComman
   }
   // extensions is newer
   else if (result === -1) {
-    const content = updateExtensionRecommendations(extensions, getExtensions())
+    const content = updateExtensionRecommendations(extensions, await getExtensions())
     await writeStorageFile('extensions.json', content)
   }
 

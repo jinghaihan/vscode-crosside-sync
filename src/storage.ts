@@ -1,7 +1,7 @@
 import { Buffer } from 'node:buffer'
 import { Uri, workspace } from 'vscode'
 import { config } from './config'
-import { logger, resolvePathUri } from './utils'
+import { logger, readFile, resolvePathUri } from './utils'
 
 function getStorageUri(): Uri {
   return resolvePathUri(config.storagePath)
@@ -41,8 +41,7 @@ export async function readStorageFile(filename: string): Promise<string> {
   const fileUri = getStorageFileUri(filename)
 
   try {
-    const buffer = await workspace.fs.readFile(fileUri)
-    return Buffer.from(buffer).toString('utf-8')
+    return await readFile(fileUri)
   }
   catch (error) {
     logger.error(`Failed to read storage file: ${filename}`, error)

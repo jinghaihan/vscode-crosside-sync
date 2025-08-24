@@ -15,3 +15,39 @@ export interface ExtensionsDiff {
 export interface ExtensionRecommendations {
   recommendations: string[]
 }
+
+export interface ExtensionConfig {
+  identifier: ExtensionIdentifier
+  version: string
+  location: ExtensionLocation
+  relativeLocation: string
+  metadata: ExtensionMetadata
+}
+
+export interface ExtensionIdentifier {
+  id: string
+  uuid: string
+}
+
+export interface ExtensionLocation {
+  $mid: number
+  path: string
+  scheme: string
+}
+
+export interface ExtensionMetadata {
+  installedTimestamp: number
+  pinned: boolean
+  source: string
+  id: string
+  publisherId: string
+  publisherDisplayName: string
+  targetPlatform: string
+  updated: boolean
+  isPreReleaseVersion: boolean
+  hasPreReleaseVersion: boolean
+  isApplicationScoped: boolean
+  isMachineScoped: boolean
+  isBuiltin: boolean
+  preRelease: boolean
+}
