@@ -4,7 +4,7 @@ import { Buffer } from 'node:buffer'
 import { dirname, join } from 'node:path'
 import { commands, extensions, ProgressLocation, Uri, window, workspace } from 'vscode'
 import { config } from './config'
-import { extensionId } from './generated/meta'
+import { displayName, extensionId } from './generated/meta'
 import { logger, readFile } from './utils'
 
 export async function getSettings(path: string) {
@@ -81,7 +81,9 @@ export async function getUserExtensions(): Promise<string[]> {
   try {
     // Try to read from the extensions.json file
     const config = await readExtensionConfig()
-    return config.map(i => i.identifier.id)
+    const extensions = config.map(i => i.identifier.id)
+    logger.info(`User extensions: \n${extensions.join('\n')}`)
+    return extensions
   }
   catch (error) {
     logger.error('Failed to get user extensions', error)
@@ -105,32 +107,32 @@ export async function setExtensions(exts: string[], prompt: boolean = true) {
 
   if (prompt) {
     const action = await window.showWarningMessage(
-      `Sync will:\n• Install ${toInstall.length} extensions\n• Remove ${toDelete.length} extensions\n\nContinue?`,
+      `${displayName}:\n• ${toInstall.length} extension${toInstall.length !== 1 ? 's' : ''} to install\n• ${toDelete.length} extension${toDelete.length !== 1 ? 's' : ''} to remove`,
       { modal: true },
-      'Yes',
-      'Show Details',
-      'Cancel',
+      'Apply Changes',
+      'Review Details',
     )
 
-    if (action === 'Show Details') {
+    if (action === 'Review Details') {
       const details = [
-        toInstall.length > 0 ? `To Install:\n${toInstall.join('\n')}` : '',
-        toDelete.length > 0 ? `To Remove:\n${toDelete.join('\n')}` : '',
+        toInstall.length > 0 ? `Installing:\n${toInstall.join('\n')}` : '',
+        toDelete.length > 0 ? `Removing:\n${toDelete.join('\n')}` : '',
       ].filter(Boolean).join('\n\n')
 
       const result = await window.showInformationMessage(
         details,
         { modal: true },
         'Continue',
-        'Cancel',
       )
 
-      if (result === 'Cancel') {
+      if (result !== 'Continue') {
         return
       }
     }
-
-    if (action === 'Cancel') {
+    else if (action === 'Apply Changes') {
+      // do nothing
+    }
+    else {
       return
     }
   }
