@@ -121,7 +121,7 @@ export async function syncExtensions(_ctx: ExtensionContext, options: SyncComman
   const { prompt = true, silent = false } = options
   const hasStorage = await storageFileExists('extensions.json')
   if (!hasStorage) {
-    const extensions = { recommendations: getExtensions() }
+    const extensions = { recommendations: await getExtensions() }
     await writeStorageFile('extensions.json', JSON.stringify(extensions, null, 2))
     if (!silent) {
       window.showInformationMessage(`${displayName}: Extensions file created`)
