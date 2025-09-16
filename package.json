@@ -4,7 +4,7 @@
   "displayName": "Crosside Sync",
   "version": "0.1.0",
   "private": true,
-  "packageManager": "pnpm@10.15.0",
+  "packageManager": "pnpm@10.16.1",
   "description": "Extension that synchronizes settings, keybindings and extensions across VSCode and its forks.",
   "author": "jinghaihan",
   "license": "MIT",
@@ -118,7 +118,7 @@
   "devDependencies": {
     "@antfu/eslint-config": "catalog:lint",
     "@types/node": "catalog:types",
-    "@types/vscode": "^1.90.0",
+    "@types/vscode": "1.90.0",
     "@vscode/vsce": "catalog:cli",
     "bumpp": "catalog:cli",
     "comment-json": "catalog:utils",
