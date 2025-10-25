@@ -44,18 +44,16 @@ export async function syncSettings(_ctx: ExtensionContext, options: SyncCommandO
   const settingsPath = await findConfigFile(codeName, 'settings.json')
   if (!settingsPath) {
     logger.error('Settings file not found')
-    if (!silent) {
+    if (!silent)
       window.showInformationMessage(`${displayName}: Settings file not found`)
-    }
     return
   }
 
   const hasStorage = await storageFileExists('settings.json')
   if (!hasStorage) {
     await writeStorageFile('settings.json', await getSettings(settingsPath))
-    if (!silent) {
+    if (!silent)
       window.showInformationMessage(`${displayName}: Settings file created`)
-    }
     return
   }
 
@@ -73,9 +71,8 @@ export async function syncSettings(_ctx: ExtensionContext, options: SyncCommandO
     await writeStorageFile('settings.json', settings)
   }
 
-  if (!silent) {
+  if (!silent)
     window.showInformationMessage(`${displayName}: Settings updated`)
-  }
 }
 
 export async function syncKeybindings(_ctx: ExtensionContext, options: SyncCommandOptions = {}) {
@@ -83,18 +80,16 @@ export async function syncKeybindings(_ctx: ExtensionContext, options: SyncComma
   const keybindingsPath = await findConfigFile(codeName, 'keybindings.json')
   if (!keybindingsPath) {
     logger.error('Keybindings file not found')
-    if (!silent) {
+    if (!silent)
       window.showInformationMessage(`${displayName}: Keybindings file not found`)
-    }
     return
   }
 
   const hasStorage = await storageFileExists('keybindings.json')
   if (!hasStorage) {
     await writeStorageFile('keybindings.json', await getKeybindings(keybindingsPath))
-    if (!silent) {
+    if (!silent)
       window.showInformationMessage(`${displayName}: Keybindings file created`)
-    }
     return
   }
 
@@ -112,9 +107,8 @@ export async function syncKeybindings(_ctx: ExtensionContext, options: SyncComma
     await writeStorageFile('keybindings.json', keybindings)
   }
 
-  if (!silent) {
+  if (!silent)
     window.showInformationMessage(`${displayName}: Keybindings updated`)
-  }
 }
 
 export async function syncExtensions(_ctx: ExtensionContext, options: SyncCommandOptions = {}) {
@@ -123,9 +117,8 @@ export async function syncExtensions(_ctx: ExtensionContext, options: SyncComman
   if (!hasStorage) {
     const extensions = { recommendations: await getExtensions() }
     await writeStorageFile('extensions.json', JSON.stringify(extensions, null, 2))
-    if (!silent) {
+    if (!silent)
       window.showInformationMessage(`${displayName}: Extensions file created`)
-    }
     return
   }
 
@@ -151,7 +144,6 @@ export async function syncExtensions(_ctx: ExtensionContext, options: SyncComman
     await writeStorageFile('extensions.json', content)
   }
 
-  if (!silent) {
+  if (!silent)
     window.showInformationMessage(`${displayName}: Extensions updated`)
-  }
 }

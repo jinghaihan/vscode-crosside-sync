@@ -1,57 +1,44 @@
 # VSCode Crosside Sync
 
+<a href="https://marketplace.visualstudio.com/items?itemName=octohash.crosside-sync" target="__blank"><img src="https://img.shields.io/visual-studio-marketplace/v/octohash.crosside-sync.svg?color=eee&amp;label=VS%20Code%20Marketplace&logo=visual-studio-code" alt="Visual Studio Marketplace Version" /></a>
+<a href="https://kermanx.github.io/reactive-vscode/" target="__blank"><img src="https://img.shields.io/badge/made_with-reactive--vscode-%23007ACC?style=flat&labelColor=%23229863"  alt="Made with reactive-vscode" /></a>
+
 A powerful VS Code extension that enables seamless synchronization of settings, keybindings, and extensions across VS Code and its forks (like Cursor) using local storage.
 
 ## Features
 
-- **Cross-IDE Sync**: Synchronize settings, keybindings, and extensions between VS Code and its forks
-- **Local Storage**: Uses `~/.crosside-sync` directory for shared storage with full user control
-- **Auto & Manual Sync**: Automatic sync on startup with manual commands for settings, keybindings, and extensions
-- **Smart Conflict Resolution**: Compares modification times to preserve your latest changes
-- **Extension Management**: Sync extensions with filtering options to exclude specific ones
-
-## Commands
-
-Access all commands through the Command Palette (`Ctrl+Shift+P` or `Cmd+Shift+P`):
-
-- **`Crosside Sync: Sync Everything`** - Sync everything (settings, keybindings, extensions)
-- **`Crosside Sync: Sync Settings`** - Only sync settings files
-- **`Crosside Sync: Sync Keybindings`** - Only sync keybindings files
-- **`Crosside Sync: Sync Extensions`** - Only sync extensions
+- <samp><b>Cross-IDE Sync</b></samp>: Synchronize settings, keybindings, and extensions between VS Code and its forks
+- <samp><b>Local Storage</b></samp>: Uses `~/.crosside-sync` directory for shared storage with full user control
+- <samp><b>Auto & Manual Sync</b></samp>: Automatic sync on startup with manual commands for settings, keybindings, and extensions
+- <samp><b>Smart Conflict Resolution</b></samp>: Compares modification times to preserve your latest changes
+- <samp><b>Extension Management</b></samp>: Sync extensions with filtering options to exclude specific ones
 
 ## Configuration
 
-Configure the extension behavior through VS Code settings:
+<!-- configs -->
 
-```json
-{
-  "crosside-sync.storagePath": "~/.crosside-sync",
-  "crosside-sync.autoSync": true,
-  "crosside-sync.promptOnAutoSync": true,
-  "crosside-sync.promptOnExtensionSync": true,
-  "crosside-sync.excludeExtensions": []
-}
-```
+| Key                                   | Description                                                         | Type      | Default              |
+| ------------------------------------- | ------------------------------------------------------------------- | --------- | -------------------- |
+| `crosside-sync.storagePath`           | The path to store the sync data share between VSCode and its forks. | `string`  | `"~/.crosside-sync"` |
+| `crosside-sync.autoSync`              | Whether to automatically sync settings.                             | `boolean` | `true`               |
+| `crosside-sync.promptOnAutoSync`      | Should show prompt before auto sync.                                | `boolean` | `true`               |
+| `crosside-sync.promptOnExtensionSync` | Should show prompt before sync extensions.                          | `boolean` | `true`               |
+| `crosside-sync.excludeExtensions`     | Extensions to exclude from sync.                                    | `array`   | `[]`                 |
 
-- **`crosside-sync.storagePath`** (`string`, default: `"~/.crosside-sync"`) - Path to the shared storage directory
-- **`crosside-sync.autoSync`** (`boolean`, default: `true`) - Whether to automatically sync on startup
-- **`crosside-sync.promptOnAutoSync`** (`boolean`, default: `true`) - Show confirmation prompt before sync
-- **`crosside-sync.promptOnExtensionSync`** (`boolean`, default: `true`) - Show confirmation prompt before syncing extensions
-- **`crosside-sync.excludeExtensions`** (`string[]`, default: `[]`) - List of extension IDs to exclude from sync
+<!-- configs -->
 
-## Installation
+## Commands
 
-1. Open VS Code or any VS Code-based editor
-2. Go to the Extensions view (`Ctrl+Shift+X` or `Cmd+Shift+X`)
-3. Search for "Crosside Sync"
-4. Click Install
+<!-- commands -->
 
-## Usage
+| Command                                  | Title                           |
+| ---------------------------------------- | ------------------------------- |
+| `octohash.crosside-sync.syncProfile`     | Crosside Sync: Sync Everything  |
+| `octohash.crosside-sync.syncSettings`    | Crosside Sync: Sync Settings    |
+| `octohash.crosside-sync.syncKeybindings` | Crosside Sync: Sync Keybindings |
+| `octohash.crosside-sync.syncExtensions`  | Crosside Sync: Sync Extensions  |
 
-After installation, the extension will automatically create the storage directory. On first run, it will sync your current settings to the shared storage
-
-- **Automatic**: The extension syncs automatically on startup (if enabled)
-- **Manual**: Use the sync commands when you want to update specific settings
+<!-- commands -->
 
 ## Supported Editors
 
@@ -59,7 +46,7 @@ After installation, the extension will automatically create the storage director
 - Cursor
 - Other VS Code-based editors (untested)
 
-## Why Crosside Sync?
+## Why ?
 
 Many developers use multiple VS Code-based editors simultaneously - VS Code for general development, Cursor for AI-assisted coding, and other forks for specific workflows. Managing consistent settings, keybindings, and extensions across these different environments can be time-consuming and error-prone.
 

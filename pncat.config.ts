@@ -4,17 +4,9 @@ export default defineConfig({
   exclude: ['@types/vscode'],
   catalogRules: mergeCatalogRules([
     {
-      name: 'cli',
-      match: ['@vscode/vsce', 'ovsx'],
-    },
-    {
       name: 'utils',
       match: ['comment-json'],
     },
-    {
-      name: 'vscode',
-      match: [/vscode/],
-      priority: 50,
-    },
   ]),
+  postRun: 'eslint --fix "**/package.json" "**/pnpm-workspace.yaml"',
 })
