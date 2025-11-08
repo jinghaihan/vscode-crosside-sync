@@ -2,6 +2,8 @@ import type { EDITOR_CONFIG_NAME_MAP } from './constants'
 
 export type AppName = keyof typeof EDITOR_CONFIG_NAME_MAP
 
+export type SyncType = 'settings' | 'extensions' | 'keybindings'
+
 export interface SyncCommandOptions {
   prompt?: boolean
   silent?: boolean
@@ -51,3 +53,5 @@ export interface ExtensionMetadata {
   isBuiltin: boolean
   preRelease: boolean
 }
+
+export type SyncMeta = Partial<Record<AppName, Partial<Record<SyncType, number>>>>

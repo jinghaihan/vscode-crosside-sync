@@ -1,4 +1,5 @@
 import type { ExtensionContext } from 'vscode'
+import type { MetaRecorder } from './recorder'
 import type { ExtensionRecommendations, SyncCommandOptions } from './types'
 import { window } from 'vscode'
 import { codeName, config } from './config'
@@ -6,9 +7,9 @@ import { displayName } from './generated/meta'
 import { jsonParse, updateExtensionRecommendations } from './json'
 import { getExtensions, getExtensionsPath, getKeybindings, getSettings, setExtensions, setKeybindings, setSettings } from './profile'
 import { ensureStorageDirectory, getStorageFileUri, readStorageFile, storageFileExists, writeStorageFile } from './storage'
-import { compareMtime, findConfigFile, logger } from './utils'
+import { findConfigFile, logger } from './utils'
 
-export async function syncProfile(ctx: ExtensionContext, options: SyncCommandOptions = {}) {
+export async function syncProfile(ctx: ExtensionContext, recorder: MetaRecorder, options: SyncCommandOptions = {}) {
   const { prompt = true, silent = false } = options
 
   let shouldSync = true
@@ -28,9 +29,9 @@ export async function syncProfile(ctx: ExtensionContext, options: SyncCommandOpt
 
     const opts = { ...options, silent: true }
     await Promise.all([
-      syncSettings(ctx, opts),
-      syncKeybindings(ctx, opts),
-      syncExtensions(ctx, { ...opts, prompt: config.promptOnExtensionSync }),
+      syncSettings(ctx, recorder, opts),
+      syncKeybindings(ctx, recorder, opts),
+      syncExtensions(ctx, recorder, { ...opts, prompt: config.promptOnExtensionSync }),
     ])
 
     if (!silent) {
@@ -39,7 +40,7 @@ export async function syncProfile(ctx: ExtensionContext, options: SyncCommandOpt
   }
 }
 
-export async function syncSettings(_ctx: ExtensionContext, options: SyncCommandOptions = {}) {
+export async function syncSettings(_ctx: ExtensionContext, recorder: MetaRecorder, options: SyncCommandOptions = {}) {
   const { silent = false } = options
   const settingsPath = await findConfigFile(codeName, 'settings.json')
   if (!settingsPath) {
@@ -52,30 +53,30 @@ export async function syncSettings(_ctx: ExtensionContext, options: SyncCommandO
   const hasStorage = await storageFileExists('settings.json')
   if (!hasStorage) {
     await writeStorageFile('settings.json', await getSettings(settingsPath))
+    await recorder.updateMtime('settings')
     if (!silent)
       window.showInformationMessage(`${displayName}: Settings file created`)
     return
   }
 
   const storageUri = getStorageFileUri('settings.json')
-  const result = await compareMtime(storageUri.fsPath, settingsPath)
+  const result = await recorder.compareMtime('settings', storageUri.fsPath, settingsPath)
 
-  // storage is newer
   if (result === 1) {
     const settings = await readStorageFile('settings.json')
     await setSettings(settingsPath, settings)
   }
-  // settings is newer
   else if (result === -1) {
     const settings = await getSettings(settingsPath)
     await writeStorageFile('settings.json', settings)
+    await recorder.updateMtime('settings')
   }
 
   if (!silent)
     window.showInformationMessage(`${displayName}: Settings updated`)
 }
 
-export async function syncKeybindings(_ctx: ExtensionContext, options: SyncCommandOptions = {}) {
+export async function syncKeybindings(_ctx: ExtensionContext, recorder: MetaRecorder, options: SyncCommandOptions = {}) {
   const { silent = false } = options
   const keybindingsPath = await findConfigFile(codeName, 'keybindings.json')
   if (!keybindingsPath) {
@@ -88,35 +89,36 @@ export async function syncKeybindings(_ctx: ExtensionContext, options: SyncComma
   const hasStorage = await storageFileExists('keybindings.json')
   if (!hasStorage) {
     await writeStorageFile('keybindings.json', await getKeybindings(keybindingsPath))
+    await recorder.updateMtime('keybindings')
     if (!silent)
       window.showInformationMessage(`${displayName}: Keybindings file created`)
     return
   }
 
   const storageUri = getStorageFileUri('keybindings.json')
-  const result = await compareMtime(storageUri.fsPath, keybindingsPath)
+  const result = await recorder.compareMtime('keybindings', storageUri.fsPath, keybindingsPath)
 
-  // storage is newer
   if (result === 1) {
     const keybindings = await readStorageFile('keybindings.json')
     await setKeybindings(keybindingsPath, keybindings)
   }
-  // keybindings is newer
   else if (result === -1) {
     const keybindings = await getKeybindings(keybindingsPath)
     await writeStorageFile('keybindings.json', keybindings)
+    await recorder.updateMtime('keybindings')
   }
 
   if (!silent)
     window.showInformationMessage(`${displayName}: Keybindings updated`)
 }
 
-export async function syncExtensions(_ctx: ExtensionContext, options: SyncCommandOptions = {}) {
+export async function syncExtensions(_ctx: ExtensionContext, recorder: MetaRecorder, options: SyncCommandOptions = {}) {
   const { prompt = true, silent = false } = options
   const hasStorage = await storageFileExists('extensions.json')
   if (!hasStorage) {
     const extensions = { recommendations: await getExtensions() }
     await writeStorageFile('extensions.json', JSON.stringify(extensions, null, 2))
+    await recorder.updateMtime('extensions')
     if (!silent)
       window.showInformationMessage(`${displayName}: Extensions file created`)
     return
@@ -132,16 +134,15 @@ export async function syncExtensions(_ctx: ExtensionContext, options: SyncComman
   }
 
   const storageUri = getStorageFileUri('extensions.json')
-  const result = await compareMtime(storageUri.fsPath, extensionsPath)
+  const result = await recorder.compareMtime('extensions', storageUri.fsPath, extensionsPath)
 
-  // storage is newer
   if (result === 1) {
     await setExtensions(extConfig.recommendations, prompt)
   }
-  // extensions is newer
   else if (result === -1) {
     const content = updateExtensionRecommendations(extensions, await getExtensions())
     await writeStorageFile('extensions.json', content)
+    await recorder.updateMtime('extensions')
   }
 
   if (!silent)

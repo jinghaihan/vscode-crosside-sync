@@ -1,3 +1,5 @@
+import type { SyncMeta } from './types'
+
 export const EDITOR_CONFIG_NAME_MAP = {
   'Visual Studio Code': 'Code',
   'Visual Studio Code - Insiders': 'Code - Insiders',
@@ -6,3 +8,5 @@ export const EDITOR_CONFIG_NAME_MAP = {
   'Cursor': 'Cursor',
   'Windsurf': 'Windsurf',
 } as const
+
+export const DEFAULT_SYNC_META: SyncMeta = {}

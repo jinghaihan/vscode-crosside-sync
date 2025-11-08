@@ -1,18 +1,21 @@
 import type { ExtensionContext, FileSystemWatcher, Uri } from 'vscode'
+import type { MetaRecorder } from './recorder'
 import { extensions, workspace } from 'vscode'
 import { codeName } from './config'
 import { updateExtensionRecommendations } from './json'
 import { getExtensions, getKeybindings, getSettings } from './profile'
-import { getStorageFileUri, readStorageFile, storageFileExists, writeStorageFile } from './storage'
-import { compareMtime, findConfigFile, logger } from './utils'
+import { readStorageFile, storageFileExists, writeStorageFile } from './storage'
+import { findConfigFile, logger } from './utils'
 
 export class ConfigWatcher {
   private ctx: ExtensionContext
+  private recorder: MetaRecorder
   private keybindingsWatcher?: FileSystemWatcher
   private debounceTimers: Map<string, NodeJS.Timeout> = new Map()
 
-  constructor(ctx: ExtensionContext) {
+  constructor(ctx: ExtensionContext, recorder: MetaRecorder) {
     this.ctx = ctx
+    this.recorder = recorder
   }
 
   async start() {
@@ -41,14 +44,14 @@ export class ConfigWatcher {
           if (settingsPath) {
             const hasStorage = await storageFileExists('settings.json')
             if (hasStorage) {
-              const storageUri = getStorageFileUri('settings.json')
-              const result = await compareMtime(storageUri.fsPath, settingsPath)
-              if (result !== -1)
+              const storageMtime = await this.recorder.getStorageMtime('settings')
+              if (storageMtime > new Date().getTime())
                 return
             }
 
             const settings = await getSettings(settingsPath)
             await writeStorageFile('settings.json', settings)
+            await this.recorder.updateMtime('settings')
           }
         }
         catch (error) {
@@ -76,6 +79,7 @@ export class ConfigWatcher {
             const content = updateExtensionRecommendations(storageExtensions, extensions)
             await writeStorageFile('extensions.json', content)
           }
+          await this.recorder.updateMtime('extensions')
 
           logger.info('Extensions synced to storage successfully')
         }
@@ -103,6 +107,7 @@ export class ConfigWatcher {
           logger.info('Keybindings file changed, syncing to storage...')
           const keybindings = await getKeybindings(keybindingsPath)
           await writeStorageFile('keybindings.json', keybindings)
+          await this.recorder.updateMtime('keybindings')
           logger.info('Keybindings synced to storage successfully')
         }
         catch (error) {

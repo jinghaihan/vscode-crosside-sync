@@ -2,20 +2,22 @@ import type { ExtensionContext } from 'vscode'
 import { defineExtension } from 'reactive-vscode'
 import { commands } from 'vscode'
 import { config } from './config'
+import { MetaRecorder } from './recorder'
 import { syncExtensions, syncKeybindings, syncProfile, syncSettings } from './sync'
 import { ConfigWatcher } from './watcher'
 
 const { activate, deactivate } = defineExtension(async (ctx: ExtensionContext) => {
-  commands.registerCommand('octohash.crosside-sync.syncProfile', () => syncProfile(ctx, { prompt: false }))
-  commands.registerCommand('octohash.crosside-sync.syncSettings', () => syncSettings(ctx))
-  commands.registerCommand('octohash.crosside-sync.syncKeybindings', () => syncKeybindings(ctx))
-  commands.registerCommand('octohash.crosside-sync.syncExtensions', () => syncExtensions(ctx, { prompt: config.promptOnExtensionSync }))
+  const recorder = new MetaRecorder()
 
-  if (config.autoSync) {
-    syncProfile(ctx, { prompt: config.promptOnAutoSync, silent: !config.promptOnAutoSync })
-  }
+  commands.registerCommand('octohash.crosside-sync.syncProfile', () => syncProfile(ctx, recorder, { prompt: false }))
+  commands.registerCommand('octohash.crosside-sync.syncSettings', () => syncSettings(ctx, recorder))
+  commands.registerCommand('octohash.crosside-sync.syncKeybindings', () => syncKeybindings(ctx, recorder))
+  commands.registerCommand('octohash.crosside-sync.syncExtensions', () => syncExtensions(ctx, recorder, { prompt: config.promptOnExtensionSync }))
 
-  const configWatcher = new ConfigWatcher(ctx)
+  if (config.autoSync)
+    syncProfile(ctx, recorder, { prompt: config.promptOnAutoSync, silent: !config.promptOnAutoSync })
+
+  const configWatcher = new ConfigWatcher(ctx, recorder)
   await configWatcher.start()
 
   ctx.subscriptions.push({

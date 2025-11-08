@@ -57,7 +57,7 @@ export async function readFile(uri: Uri): Promise<string> {
   return Buffer.from(buffer).toString('utf-8')
 }
 
-export async function compareMtime(path1: string, path2: string): Promise<1 | -1 | 0 | undefined> {
+export async function compareFsMtime(path1: string, path2: string): Promise<1 | -1 | 0 | undefined> {
   try {
     const [stat1, stat2] = await Promise.all([
       workspace.fs.stat(Uri.file(path1)),
