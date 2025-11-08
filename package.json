@@ -2,7 +2,7 @@
   "publisher": "octohash",
   "name": "crosside-sync",
   "displayName": "Crosside Sync",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "private": true,
   "packageManager": "pnpm@10.20.0",
   "description": "Extension that synchronizes settings, keybindings and extensions across VSCode and its forks.",
