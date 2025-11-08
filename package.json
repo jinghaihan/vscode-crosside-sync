@@ -4,7 +4,7 @@
   "displayName": "Crosside Sync",
   "version": "0.1.3",
   "private": true,
-  "packageManager": "pnpm@10.19.0",
+  "packageManager": "pnpm@10.20.0",
   "description": "Extension that synchronizes settings, keybindings and extensions across VSCode and its forks.",
   "author": "jinghaihan",
   "license": "MIT",
