@@ -3,7 +3,7 @@ import { Uri, workspace } from 'vscode'
 import { config } from './config'
 import { logger, readFile, resolvePathUri } from './utils'
 
-function getStorageUri(): Uri {
+export function getStorageUri(): Uri {
   return resolvePathUri(config.storagePath)
 }
 

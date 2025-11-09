@@ -123,6 +123,7 @@
     "comment-json": "catalog:utils",
     "eslint": "catalog:lint",
     "lint-staged": "catalog:lint",
+    "ofetch": "catalog:network",
     "pncat": "catalog:cli",
     "reactive-vscode": "catalog:vscode",
     "simple-git-hooks": "catalog:lint",

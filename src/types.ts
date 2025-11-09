@@ -55,3 +55,32 @@ export interface ExtensionMetadata {
 }
 
 export type SyncMeta = Partial<Record<AppName, Partial<Record<SyncType, number>>>>
+
+export interface ExtensionQueryResponse {
+  results: {
+    extensions: Extension[]
+  }[]
+}
+
+export interface Extension {
+  extensionId: string
+  extensionName: string
+  displayName: string
+  publisher: {
+    publisherId: string
+    publisherName: string
+    displayName: string
+  }
+  versions: ExtensionVersion[]
+}
+
+export interface ExtensionVersion {
+  version: string
+  lastUpdated: string
+  files: ExtensionFile[]
+}
+
+export interface ExtensionFile {
+  assetType: string
+  source: string
+}

@@ -12,6 +12,8 @@ catalogs:
     eslint: ^9.39.1
     lint-staged: ^16.2.6
     simple-git-hooks: ^2.13.1
+  network:
+    ofetch: ^1.5.1
   test:
     vitest: ^4.0.8
   tsc:
