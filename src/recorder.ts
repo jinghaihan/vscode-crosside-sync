@@ -71,19 +71,22 @@ export class MetaRecorder {
 
   async compareMtime(time: SyncType, storagePath: string, appPath: string) {
     try {
-      const mtime1 = await this.getStorageMtime(time)
-      const mtime2 = await this.getMtime(time, this.appName)
+      const storageMtime = await this.getStorageMtime(time)
+      const fileMtime = await this.getMtime(time, this.appName)
 
-      logger.info(`compare ${time} mtime: storage - ${mtime1} app - ${mtime2}`)
+      logger.info(`compare ${time} mtime: storage - ${storageMtime} app - ${fileMtime}`)
 
+      // first time to sync, consider app is newer
+      if (!storageMtime)
+        return -1
       // when no mtime is recorded, consider storage is newer
-      if (!mtime1 || !mtime2) {
+      if (!fileMtime) {
         await this.updateMtime(time)
         return 1
       }
-      if (mtime1 > mtime2)
+      if (storageMtime > fileMtime)
         return 1 // storage is newer
-      else if (mtime1 < mtime2)
+      else if (storageMtime < fileMtime)
         return -1 // app is newer
       else
         return 0 // same modification time
