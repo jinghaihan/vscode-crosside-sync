@@ -45,7 +45,7 @@ export async function downloadVsixPackage(id: string): Promise<Uri> {
   const res = await ofetch(url, {
     responseType: 'arrayBuffer',
   })
-  const uri = Uri.joinPath(getStorageUri(), id)
+  const uri = Uri.joinPath(getStorageUri(), id.endsWith('.vsix') ? id : `${id}.vsix`)
   await workspace.fs.writeFile(uri, Buffer.from(res))
   return uri
 }

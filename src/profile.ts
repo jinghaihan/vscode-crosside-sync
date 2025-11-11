@@ -240,8 +240,12 @@ export async function installExtensionFromMarketplace(ids: string[]) {
           increment: (++completed / total) * 100,
         })
         const uri = await downloadVsixPackage(id)
-        await commands.executeCommand('workbench.extensions.installExtension', uri)
-        await workspace.fs.delete(uri, { useTrash: false })
+        try {
+          await commands.executeCommand('workbench.extensions.installExtension', uri)
+        }
+        finally {
+          await workspace.fs.delete(uri, { useTrash: false })
+        }
         needsReload = true
       }
       catch (error) {
