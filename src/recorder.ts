@@ -1,7 +1,7 @@
 import type { AppName, SyncMeta, SyncType } from './types'
 import { env, Uri, workspace } from 'vscode'
 import { DEFAULT_SYNC_META } from './constants'
-import { jsonParse } from './json'
+import { jsonParse, jsonStringify } from './json'
 import { getStorageFileUri, readStorageFile, storageFileExists, writeStorageFile } from './storage'
 import { compareFsMtime, logger } from './utils'
 
@@ -32,7 +32,7 @@ export class MetaRecorder {
   private async ensure() {
     const hasStorage = await storageFileExists(this.filename)
     if (!hasStorage)
-      await writeStorageFile(this.filename, JSON.stringify(DEFAULT_SYNC_META, null, 2))
+      await writeStorageFile(this.filename, jsonStringify(DEFAULT_SYNC_META))
   }
 
   private async read() {
@@ -46,7 +46,7 @@ export class MetaRecorder {
       acc[key as AppName] = meta[key as AppName]
       return acc
     }, {} as SyncMeta)
-    await writeStorageFile(this.filename, JSON.stringify(sortedMeta, null, 2))
+    await writeStorageFile(this.filename, jsonStringify(sortedMeta))
   }
 
   async getStorageMtime(key: SyncType) {

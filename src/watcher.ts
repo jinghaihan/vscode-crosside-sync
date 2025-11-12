@@ -2,7 +2,7 @@ import type { ExtensionContext, FileSystemWatcher, Uri } from 'vscode'
 import type { MetaRecorder } from './recorder'
 import { extensions, workspace } from 'vscode'
 import { codeName } from './config'
-import { updateExtensionRecommendations } from './json'
+import { jsonStringify, updateExtensionRecommendations } from './json'
 import { getExtensions, getKeybindings, getSettings } from './profile'
 import { readStorageFile, storageFileExists, writeStorageFile } from './storage'
 import { findConfigFile, logger } from './utils'
@@ -12,6 +12,8 @@ export class ConfigWatcher {
   private recorder: MetaRecorder
   private keybindingsWatcher?: FileSystemWatcher
   private debounceTimers: Map<string, NodeJS.Timeout> = new Map()
+
+  private prevSettings?: string
 
   constructor(ctx: ExtensionContext, recorder: MetaRecorder) {
     this.ctx = ctx
@@ -50,6 +52,11 @@ export class ConfigWatcher {
             }
 
             const settings = await getSettings(settingsPath)
+            // compare with previous settings, if global settings are not changed, skip syncing
+            if (!settings || this.prevSettings === settings)
+              return
+
+            this.prevSettings = settings
             await writeStorageFile('settings.json', settings)
             await this.recorder.updateMtime('settings')
           }
@@ -72,7 +79,7 @@ export class ConfigWatcher {
           const hasStorage = await storageFileExists('extensions.json')
 
           if (!hasStorage) {
-            await writeStorageFile('extensions.json', JSON.stringify({ recommendations: extensions }, null, 2))
+            await writeStorageFile('extensions.json', jsonStringify({ recommendations: extensions }))
           }
           else {
             const storageExtensions = await readStorageFile('extensions.json')

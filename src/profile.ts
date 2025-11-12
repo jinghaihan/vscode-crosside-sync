@@ -6,6 +6,7 @@ import { commands, extensions, ProgressLocation, Uri, window, workspace } from '
 import { config } from './config'
 import { downloadVsixPackage } from './downloader'
 import { displayName, extensionId } from './generated/meta'
+import { jsonParse, jsonStringify } from './json'
 import { logger, readFile } from './utils'
 
 export async function getSettings(path: string) {
@@ -24,7 +25,12 @@ export async function setSettings(path: string, settings: string | Record<string
   try {
     const content = typeof settings === 'string'
       ? settings
-      : JSON.stringify(settings, null, 2)
+      : jsonStringify(settings)
+
+    // safe guard, if content is empty, throw an error
+    if (!content)
+      throw new Error('Settings content is empty')
+
     await workspace.fs.writeFile(Uri.file(path), Buffer.from(content, 'utf8'))
     logger.info(`Settings updated: ${path}`)
   }
@@ -50,7 +56,7 @@ export async function setKeybindings(path: string, keybindings: string[] | strin
   try {
     const content = typeof keybindings === 'string'
       ? keybindings
-      : JSON.stringify(keybindings, null, 2)
+      : jsonStringify(keybindings)
     await workspace.fs.writeFile(Uri.file(path), Buffer.from(content, 'utf8'))
     logger.info(`Keybindings updated: ${path}`)
   }
@@ -80,7 +86,7 @@ export async function readExtensionConfig(): Promise<ExtensionConfig[]> {
 
   const uri = Uri.file(join(extensionsPath, 'extensions.json'))
   const content = await readFile(uri)
-  const config = JSON.parse(content)
+  const config = jsonParse(content)
 
   return config
 }

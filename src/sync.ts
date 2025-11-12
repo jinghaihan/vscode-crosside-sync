@@ -4,7 +4,7 @@ import type { ExtensionRecommendations, SyncCommandOptions } from './types'
 import { window } from 'vscode'
 import { codeName, config } from './config'
 import { displayName } from './generated/meta'
-import { jsonParse, updateExtensionRecommendations } from './json'
+import { jsonParse, jsonStringify, updateExtensionRecommendations } from './json'
 import { getExtensions, getExtensionsPath, getKeybindings, getSettings, setExtensions, setKeybindings, setSettings } from './profile'
 import { ensureStorageDirectory, getStorageFileUri, readStorageFile, storageFileExists, writeStorageFile } from './storage'
 import { findConfigFile, logger } from './utils'
@@ -117,7 +117,7 @@ export async function syncExtensions(_ctx: ExtensionContext, recorder: MetaRecor
   const hasStorage = await storageFileExists('extensions.json')
   if (!hasStorage) {
     const extensions = { recommendations: await getExtensions() }
-    await writeStorageFile('extensions.json', JSON.stringify(extensions, null, 2))
+    await writeStorageFile('extensions.json', jsonStringify(extensions))
     await recorder.updateMtime('extensions')
     if (!silent)
       window.showInformationMessage(`${displayName}: Extensions file created`)

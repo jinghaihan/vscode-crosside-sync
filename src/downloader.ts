@@ -2,6 +2,7 @@ import type { ExtensionQueryResponse } from './types'
 import { Buffer } from 'node:buffer'
 import { ofetch } from 'ofetch'
 import { Uri, workspace } from 'vscode'
+import { jsonStringify } from './json'
 import { getStorageUri } from './storage'
 
 async function getVsixPackage(id: string): Promise<string> {
@@ -13,7 +14,7 @@ async function getVsixPackage(id: string): Promise<string> {
         'Accept': 'application/json;api-version=7.1-preview.1',
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
+      body: jsonStringify({
         assetTypes: ['Microsoft.VisualStudio.Services.VSIXPackage'],
         filters: [
           {

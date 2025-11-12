@@ -1,11 +1,11 @@
 packages: []
 catalogs:
   build:
-    tsdown: ^0.16.1
+    tsdown: ^0.16.3
   cli:
     '@vscode/vsce': ^3.7.0
     bumpp: ^10.3.1
-    pncat: ^0.7.4
+    pncat: ^0.7.5
     taze: ^19.9.0
   lint:
     '@antfu/eslint-config': ^6.2.0
@@ -19,7 +19,7 @@ catalogs:
   tsc:
     typescript: ^5.9.3
   types:
-    '@types/node': ^24.10.0
+    '@types/node': ^24.10.1
   utils:
     comment-json: ^4.4.1
   vscode:

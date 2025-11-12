@@ -6,6 +6,10 @@ export function jsonParse<T = any>(content: string): T {
   return parse(content, null, true) as unknown as T
 }
 
+export function jsonStringify<T = any>(content: T): string {
+  return stringify(content, null, 2)
+}
+
 export function updateExtensionRecommendations(content: string, extensions: string[]) {
   const parsed = parse(content) as CommentObject
   if (!parsed || !parsed.recommendations) {
