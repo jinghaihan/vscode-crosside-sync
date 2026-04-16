@@ -8,6 +8,7 @@
   "description": "Extension that synchronizes settings, keybindings and extensions across VSCode and its forks.",
   "author": "jinghaihan",
   "license": "MIT",
+  "funding": "https://github.com/sponsors/jinghaihan",
   "homepage": "https://github.com/jinghaihan/vscode-crosside-sync#readme",
   "repository": {
     "type": "git",
